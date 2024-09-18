@@ -32,7 +32,7 @@ export default function AllProducts() {
       setFilteredProducts(products); // Jika kategori "All" dipilih, tampilkan semua produk
     } else {
       const filtered = products.filter(
-        (product) => product.category === selectedCategory.toLowerCase() // Filter berdasarkan kategori
+        (product) => product.category === selectedCategory.toLowerCase() // Gunakan lowercase untuk mencocokkan kategori
       );
       setFilteredProducts(filtered);
     }
@@ -47,13 +47,13 @@ export default function AllProducts() {
   }
 
   return (
-    <div>
+    <div className="p-4 md:p-6 lg:px-4">
       {/* Komponen Filter */}
       <Filter
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      <div className="grid grid-cols-6 gap-2 mx-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 mt-4">
         {filteredProducts.map((product) => (
           <BoxItem
             key={product.id}
