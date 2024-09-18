@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Button from "../atoms/button";
 import Input from "../atoms/input";
 
@@ -5,7 +6,9 @@ function Header() {
   return (
     <div className="bg-green-400 w-full p-4">
       <div className="flex items-center gap-8">
-        <h1>TokoOnline</h1>
+        <Link to="/" className="text-black text-xl font-bold">
+          TokoOnline
+        </Link>
         <div className="relative flex-grow">
           <Input
             type="search"
