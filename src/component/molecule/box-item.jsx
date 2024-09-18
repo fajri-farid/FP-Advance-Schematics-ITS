@@ -1,4 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 export default function BoxItem({ id, title, price, image, rating }) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/detail-product/${id}`);
+  };
   // Function to display the rating as stars
   const renderStars = (rate) => {
     const fullStars = Math.floor(rate);
@@ -25,7 +32,10 @@ export default function BoxItem({ id, title, price, image, rating }) {
   };
 
   return (
-    <div className="border p-4 rounded-lg shadow-md w-64 flex flex-col justify-between">
+    <div
+      className="border p-4 rounded-lg shadow-md w-64 flex flex-col justify-between"
+      onClick={handleClick}
+    >
       <img
         src={image}
         alt={title}
