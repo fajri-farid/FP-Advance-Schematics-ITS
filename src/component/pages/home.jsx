@@ -3,7 +3,7 @@ import Header from "../organism/header";
 
 export default function Home() {
   return (
-    <div className="flex gap-4 flex-col">
+    <div className="flex gap-2 flex-col">
       <Header />
       <AllProducts />
     </div>
