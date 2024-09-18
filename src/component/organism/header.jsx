@@ -5,6 +5,7 @@ function Header() {
   return (
     <div className="bg-green-400 w-full p-4">
       <div className="flex items-center gap-8">
+        <h1>TokoOnline</h1>
         <div className="relative flex-grow">
           <Input
             type="search"
