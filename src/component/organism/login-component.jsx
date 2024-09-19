@@ -8,6 +8,7 @@ const url = "https://v1.appbackend.io/v1/rows/dKqJ7KQXYKek"; // URL backend untu
 export default function LoginComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State untuk toggle password
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate(); // Hook untuk navigasi
@@ -47,6 +48,10 @@ export default function LoginComponent() {
       });
   };
 
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="max-w-lg w-full p-6 sm:p-8 md:p-12 lg:p-16 md:border md:rounded-lg md:shadow-lg">
@@ -65,14 +70,22 @@ export default function LoginComponent() {
           </div>
 
           {/* Input Password */}
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <Input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               size="large"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <span
+              onClick={handleTogglePassword}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"
+            >
+              <i
+                className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}
+              ></i>
+            </span>
           </div>
 
           {/* Error Message */}
