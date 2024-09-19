@@ -18,7 +18,7 @@ function Input({
     <input
       type={type}
       placeholder={placeholder}
-      className={`border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 blue-500 w-full ${getSize()}`}
+      className={`border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 w-full ${getSize()}`}
     />
   );
 }
