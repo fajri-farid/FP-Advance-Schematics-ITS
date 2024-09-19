@@ -2,6 +2,9 @@ function Input({
   type = "text",
   placeholder = "Enter text...",
   size = "medium",
+  name,
+  value,
+  onChange,
 }) {
   const getSize = () => {
     switch (size) {
@@ -19,6 +22,9 @@ function Input({
       type={type}
       placeholder={placeholder}
       className={`border rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 w-full ${getSize()}`}
+      name={name}
+      value={value}
+      onChange={onChange}
     />
   );
 }
