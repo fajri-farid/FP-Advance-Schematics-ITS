@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Input from "../atoms/input";
 import Button from "../atoms/button";
 
@@ -15,6 +16,8 @@ export default function RegisterComponent() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,16 +57,18 @@ export default function RegisterComponent() {
       },
       body: JSON.stringify([payload]),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
       .then((result) => {
         console.log(result);
-        if (result && result.success) {
-          alert("Registration successful!");
-          setErrorMessage(""); // Clear error message
-        } else {
-          setErrorMessage("");
-          // setErrorMessage("Failed to register. Please try again.");
-        }
+        // Asumsikan registrasi berhasil jika respons diterima
+        alert("Registration successful!");
+        navigate("/login");
+        setErrorMessage("");
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -77,7 +82,6 @@ export default function RegisterComponent() {
         <h1 className="text-2xl font-bold text-center mb-6">Register</h1>
 
         <form onSubmit={handleSubmit}>
-          {/* Input Username */}
           <div className="mb-4">
             <Input
               name="name"
@@ -88,7 +92,6 @@ export default function RegisterComponent() {
             />
           </div>
 
-          {/* Input Email */}
           <div className="mb-4">
             <Input
               type="email"
@@ -100,7 +103,6 @@ export default function RegisterComponent() {
             />
           </div>
 
-          {/* Input Password */}
           <div className="mb-4 relative">
             <Input
               type={showPassword ? "text" : "password"}
@@ -120,7 +122,6 @@ export default function RegisterComponent() {
             </span>
           </div>
 
-          {/* Input Confirm Password */}
           <div className="mb-4 relative">
             <Input
               type={showConfirmPassword ? "text" : "password"}
@@ -142,14 +143,12 @@ export default function RegisterComponent() {
             </span>
           </div>
 
-          {/* Error Message */}
           {errorMessage && (
             <p className="text-red-500 text-sm text-center mb-4">
               {errorMessage}
             </p>
           )}
 
-          {/* Login Link */}
           <p className="text-center text-sm text-gray-600 mb-4">
             Already have an account?{" "}
             <a href="/login" className="text-blue-500 hover:underline">
@@ -157,7 +156,6 @@ export default function RegisterComponent() {
             </a>
           </p>
 
-          {/* Register Button */}
           <Button label="Register" className="w-full" />
         </form>
       </div>
