@@ -32,16 +32,11 @@ export default function Detail() {
 
   const checkIfFavorited = async () => {
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn?user_id=${user_id}`
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      const favorites = result.data;
+      const favorites = response.data.data;
 
       if (Array.isArray(favorites)) {
         const favoriteItem = favorites.find(
@@ -85,22 +80,15 @@ export default function Detail() {
 
     const cartUrl = "https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ";
     try {
-      const response = await fetch(cartUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await axios.post(cartUrl, [
+        {
+          user_name: user_id,
+          product_id: product.id,
+          count: 1,
         },
-        body: JSON.stringify([
-          {
-            user_name: user_id,
-            product_id: product.id,
-            count: 1,
-          },
-        ]),
-      });
+      ]);
 
-      const result = await response.json();
-      console.log("Item added to cart:", result);
+      console.log("Item added to cart:", response.data);
       alert("Berhasil menambahkan produk ke keranjang!");
     } catch (error) {
       console.error("Error adding item to cart:", error);
@@ -117,16 +105,11 @@ export default function Detail() {
 
     if (isFavorited) {
       try {
-        const response = await fetch(url, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify([favoriteId]),
+        const response = await axios.delete(url, {
+          data: [favoriteId],
         });
 
-        const result = await response.json();
-        console.log("Item removed from favorites:", result);
+        console.log("Item removed from favorites:", response.data);
         setIsFavorited(false);
         setFavoriteId(null);
       } catch (error) {
@@ -134,23 +117,16 @@ export default function Detail() {
       }
     } else {
       try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await axios.post(url, [
+          {
+            user_id: user_id,
+            product_id: product.id,
           },
-          body: JSON.stringify([
-            {
-              user_id: user_id,
-              product_id: product.id,
-            },
-          ]),
-        });
+        ]);
 
-        const result = await response.json();
-        console.log("Item added to favorites:", result);
+        console.log("Item added to favorites:", response.data);
         setIsFavorited(true);
-        setFavoriteId(result.data._id);
+        setFavoriteId(response.data.data._id);
       } catch (error) {
         console.error("Error adding item to favorites:", error);
       }

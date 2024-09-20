@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Input from "../atoms/input";
 import Button from "../atoms/button";
-
-const url = "https://v1.appbackend.io/v1/rows/dKqJ7KQXYKek";
 
 export default function RegisterComponent() {
   const [formData, setFormData] = useState({
@@ -31,7 +30,7 @@ export default function RegisterComponent() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.password) {
@@ -50,30 +49,20 @@ export default function RegisterComponent() {
       password: formData.password,
     };
 
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([payload]),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((result) => {
-        console.log(result);
+    try {
+      const response = await axios.post(
+        "https://v1.appbackend.io/v1/rows/dKqJ7KQXYKek",
+        [payload]
+      );
+      console.log(response.data);
 
-        alert("Registration successful!");
-        navigate("/login");
-        setErrorMessage("");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorMessage("Failed to register. Please try again.");
-      });
+      alert("Registration successful!");
+      navigate("/login");
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Failed to register. Please try again.");
+    }
   };
 
   return (
