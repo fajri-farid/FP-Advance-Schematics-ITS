@@ -1,11 +1,11 @@
-import AllProducts from "../organism/all-products";
 import Header from "../organism/header";
+import WishlistOrganism from "../organism/wislist-organism";
 
-export default function Home() {
+export default function Wishlist() {
   return (
     <div className="flex gap-2 flex-col">
       <Header />
-      <AllProducts />
+      <WishlistOrganism />
     </div>
   );
 }
