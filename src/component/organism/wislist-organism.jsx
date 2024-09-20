@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import BoxItem from "./../molecule/box-item";
 import Loader from "../atoms/loader";
 
@@ -18,10 +19,12 @@ export default function WishlistOrganism() {
 
     setIsLoading(true);
     try {
-      const wishlistResponse = await fetch(
-        "https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn"
-      );
-      const wishlistData = await wishlistResponse.json();
+      const [wishlistResponse, productResponse] = await Promise.all([
+        axios.get("https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn"),
+        axios.get("https://fakestoreapi.com/products"),
+      ]);
+
+      const wishlistData = wishlistResponse.data;
       console.log("Wishlist Data:", wishlistData);
 
       const filteredWishlistData = wishlistData.data.filter(
@@ -29,9 +32,7 @@ export default function WishlistOrganism() {
       );
       console.log("Filtered Wishlist Data:", filteredWishlistData);
 
-      // Fetch product data
-      const productResponse = await fetch("https://fakestoreapi.com/products");
-      const productData = await productResponse.json();
+      const productData = productResponse.data;
       console.log("Product Data:", productData);
 
       const mappedWishlistItems = filteredWishlistData.map((wishlistItem) => {
