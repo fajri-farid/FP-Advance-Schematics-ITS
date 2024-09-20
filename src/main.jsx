@@ -8,6 +8,7 @@ import Register from "./component/pages/register.jsx";
 import Login from "./component/pages/login.jsx";
 import Cart from "./component/pages/cart.jsx";
 import Wishlist from "./component/pages/wishlist.jsx";
+import PrivateRoute from "./component/private-route.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,11 +29,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/cart",
-    element: <Cart />,
+    element: (
+      <PrivateRoute>
+        <Cart />
+      </PrivateRoute>
+    ),
   },
   {
     path: "/wishlist",
-    element: <Wishlist />,
+    element: (
+      <PrivateRoute>
+        <Wishlist />
+      </PrivateRoute>
+    ),
   },
 ]);
 
