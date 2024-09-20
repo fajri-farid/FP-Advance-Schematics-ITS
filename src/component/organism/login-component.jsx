@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Input from "../atoms/input";
 import Button from "../atoms/button";
-
-const url = "https://v1.appbackend.io/v1/rows/dKqJ7KQXYKek";
 
 export default function LoginComponent() {
   const [email, setEmail] = useState("");
@@ -13,7 +12,7 @@ export default function LoginComponent() {
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -21,32 +20,33 @@ export default function LoginComponent() {
       return;
     }
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
+    try {
+      const response = await axios.get(
+        "https://v1.appbackend.io/v1/rows/dKqJ7KQXYKek"
+      );
+      const result = response.data;
+      console.log(result);
 
-        if (result.data && Array.isArray(result.data)) {
-          const user = result.data.find(
-            (user) => user.email === email && user.password === password
-          );
+      if (result.data && Array.isArray(result.data)) {
+        const user = result.data.find(
+          (user) => user.email === email && user.password === password
+        );
 
-          if (user) {
-            sessionStorage.setItem("user", JSON.stringify(user));
+        if (user) {
+          sessionStorage.setItem("user", JSON.stringify(user));
 
-            alert("Login successful!");
-            navigate("/");
-          } else {
-            setErrorMessage("Invalid email or password!");
-          }
+          alert("Login successful!");
+          navigate("/");
         } else {
-          setErrorMessage("Unexpected response format.");
+          setErrorMessage("Invalid email or password!");
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorMessage("An error occurred. Please try again.");
-      });
+      } else {
+        setErrorMessage("Unexpected response format.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("An error occurred. Please try again.");
+    }
   };
 
   const handleTogglePassword = () => {

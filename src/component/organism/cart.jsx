@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import CartItem from "./../molecule/cart-item";
 import Loader from "../atoms/loader";
 
@@ -13,13 +14,13 @@ function CartList() {
 
     setIsLoading(true);
     try {
-      const cartResponse = await fetch(
-        "https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ"
-      );
-      const cartData = await cartResponse.json();
+      const [cartResponse, productResponse] = await Promise.all([
+        axios.get("https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ"),
+        axios.get("https://fakestoreapi.com/products"),
+      ]);
 
-      const productResponse = await fetch("https://fakestoreapi.com/products");
-      const productData = await productResponse.json();
+      const cartData = cartResponse.data;
+      const productData = productResponse.data;
 
       const filteredCartData = cartData.data.filter(
         (item) => item.user_name === user_id
@@ -60,28 +61,14 @@ function CartList() {
         )
       );
 
-      const response = await fetch(
-        "https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            _id: itemToUpdate._id,
-            user_name: itemToUpdate.user_name,
-            product_id: itemToUpdate.product_id,
-            count: newQuantity,
-          }),
-        }
-      );
+      await axios.put("https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ", {
+        _id: itemToUpdate._id,
+        user_name: itemToUpdate.user_name,
+        product_id: itemToUpdate.product_id,
+        count: newQuantity,
+      });
 
-      if (response.ok) {
-        console.log("Quantity updated on server successfully");
-      } else {
-        console.error("Failed to update quantity on server");
-        await fetchCartItems();
-      }
+      console.log("Quantity updated on server successfully");
     } catch (error) {
       console.error("Error updating quantity on server:", error);
       await fetchCartItems();
@@ -90,29 +77,14 @@ function CartList() {
 
   const handleDelete = async (itemId) => {
     try {
-      const response = await fetch(
-        "https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify([itemId]),
-        }
-      );
+      await axios.delete("https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ", {
+        data: [itemId],
+      });
 
-      if (response.ok) {
-        console.log("Item deleted from server successfully");
-        setCartItems((prevItems) =>
-          prevItems.filter((item) => item._id !== itemId)
-        );
-      } else {
-        console.error(
-          "Failed to delete item from server:",
-          response.status,
-          response.statusText
-        );
-      }
+      console.log("Item deleted from server successfully");
+      setCartItems((prevItems) =>
+        prevItems.filter((item) => item._id !== itemId)
+      );
     } catch (error) {
       console.error("Error deleting item from server:", error);
     }
