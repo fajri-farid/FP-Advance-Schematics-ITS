@@ -8,6 +8,8 @@ export default function Detail() {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const user = JSON.parse(sessionStorage.getItem("user")); // Mengambil dan mengurai data pengguna
+  const user_id = user ? user._id : null; // Mendapatkan user_id jika ada
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -37,10 +39,62 @@ export default function Detail() {
     return <div>Product not found</div>;
   }
 
+  if (!user_id) {
+    return <div>Please log in to add items to your cart.</div>;
+  }
+
+  const addToCart = async () => {
+    const cartUrl = "https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ";
+    try {
+      const response = await fetch(cartUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([
+          {
+            user_name: user_id,
+            product_id: product.id,
+            count: 1,
+          },
+        ]),
+      });
+
+      const result = await response.json();
+      console.log("Item added to cart:", result);
+      alert("Berhasil menambahkan produk ke keranjang!");
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
+  };
+
+  const addToFavorites = async () => {
+    const favoriteUrl = "https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn";
+    try {
+      const response = await fetch(favoriteUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([
+          {
+            user_id: user_id,
+            product_id: product.id,
+          },
+        ]),
+      });
+
+      const result = await response.json();
+      console.log("Item added to favorites:", result);
+      alert("Berhasil menambahkan produk ke wishlist!");
+    } catch (error) {
+      console.error("Error adding item to favorites:", error);
+    }
+  };
+
   return (
     <div className="flex justify-center items-center md:h-screen h-auto">
       <div className="flex flex-col md:flex-row justify-between p-4 md:p-8 w-full md:w-3/4 border border-gray-200 rounded-lg shadow-md">
-        {/* Left Section (Image) */}
         <div className="w-full md:w-1/2 flex justify-center items-center mb-4 md:mb-0">
           <img
             src={product.image}
@@ -49,7 +103,6 @@ export default function Detail() {
           />
         </div>
 
-        {/* Right Section (Details) */}
         <div className="w-full md:w-1/2 md:pl-8 mx-auto">
           <h1 className="text-2xl md:text-3xl font-bold mb-4">
             {product.title}
@@ -69,10 +122,17 @@ export default function Detail() {
           </div>
 
           <div className="flex gap-4">
-            <button className="px-4 md:px-6 py-2 bg-blue-500 text-white rounded-lg">
+            <button
+              onClick={addToCart}
+              className="px-4 md:px-6 py-2 bg-blue-500 text-white rounded-lg"
+            >
               <i className="fa-solid fa-cart-shopping mr-2"></i> Add to Cart
             </button>
-            <button className="text-red-500 text-xl md:text-2xl">
+
+            <button
+              onClick={addToFavorites}
+              className="text-red-500 text-xl md:text-2xl"
+            >
               <i className="fa-regular fa-heart"></i>
             </button>
           </div>
