@@ -7,6 +7,7 @@ import DetailProduct from "./component/pages/detail-product.jsx";
 import Register from "./component/pages/register.jsx";
 import Login from "./component/pages/login.jsx";
 import Cart from "./component/pages/cart.jsx";
+import Wishlist from "./component/pages/wishlist.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: "/cart",
     element: <Cart />,
+  },
+  {
+    path: "/wishlist",
+    element: <Wishlist />,
   },
 ]);
 
