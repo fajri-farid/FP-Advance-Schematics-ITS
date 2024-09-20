@@ -6,17 +6,16 @@ import Filter from "../organism/filter"; // Import Filter
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]); // State untuk produk yang sudah difilter
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("All"); // State untuk kategori yang dipilih
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // Mengambil data dari API menggunakan Axios
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get("https://fakestoreapi.com/products");
         setProducts(response.data);
-        setFilteredProducts(response.data); // Default tampilkan semua produk
+        setFilteredProducts(response.data);
       } catch (error) {
         console.error("Error fetching the products:", error);
       } finally {
@@ -26,13 +25,12 @@ export default function AllProducts() {
     fetchProducts();
   }, []);
 
-  // Efek untuk mem-filter produk berdasarkan kategori yang dipilih
   useEffect(() => {
     if (selectedCategory === "All") {
-      setFilteredProducts(products); // Jika kategori "All" dipilih, tampilkan semua produk
+      setFilteredProducts(products);
     } else {
       const filtered = products.filter(
-        (product) => product.category === selectedCategory.toLowerCase() // Gunakan lowercase untuk mencocokkan kategori
+        (product) => product.category === selectedCategory.toLowerCase()
       );
       setFilteredProducts(filtered);
     }
@@ -48,7 +46,6 @@ export default function AllProducts() {
 
   return (
     <div className="p-4 md:p-6 lg:px-4">
-      {/* Komponen Filter */}
       <Filter
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}

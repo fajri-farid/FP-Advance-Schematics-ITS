@@ -65,7 +65,7 @@ export default function RegisterComponent() {
       })
       .then((result) => {
         console.log(result);
-        // Asumsikan registrasi berhasil jika respons diterima
+
         alert("Registration successful!");
         navigate("/login");
         setErrorMessage("");

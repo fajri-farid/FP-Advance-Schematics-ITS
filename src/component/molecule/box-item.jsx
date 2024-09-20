@@ -24,7 +24,7 @@ export default function BoxItem({ id, title, price, image, rating }) {
       </h3>
       <div className="flex items-center mb-1 sm:mb-2">
         <StarRating rate={rating.rate} />{" "}
-        {/* Ganti renderStars dengan StarRating */}
+ 
         <span className="ml-1 sm:ml-2 text-xs sm:text-sm text-gray-600">
           ({rating.count})
         </span>

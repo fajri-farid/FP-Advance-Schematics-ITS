@@ -1,17 +1,17 @@
 import { useState, useEffect, useCallback } from "react";
 import CartItem from "./../molecule/cart-item";
-import Loader from "../atoms/loader"; // Pastikan Anda sudah memiliki komponen Loader
+import Loader from "../atoms/loader";
 
 function CartList() {
   const [cartItems, setCartItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Tambahkan state untuk loading
+  const [isLoading, setIsLoading] = useState(true);
   const user = JSON.parse(sessionStorage.getItem("user"));
   const user_id = user ? user._id : null;
 
   const fetchCartItems = useCallback(async () => {
     if (!user_id) return;
 
-    setIsLoading(true); // Set loading menjadi true sebelum fetching data
+    setIsLoading(true);
     try {
       const cartResponse = await fetch(
         "https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ"
@@ -41,7 +41,7 @@ function CartList() {
     } catch (error) {
       console.error("Error fetching cart or product data", error);
     } finally {
-      setIsLoading(false); // Set loading menjadi false setelah fetching selesai
+      setIsLoading(false);
     }
   }, [user_id]);
 
@@ -54,7 +54,6 @@ function CartList() {
       const itemToUpdate = cartItems.find((item) => item._id === itemId);
       if (!itemToUpdate) return;
 
-      // Optimistically update the UI
       setCartItems((prevItems) =>
         prevItems.map((item) =>
           item._id === itemId ? { ...item, count: newQuantity } : item

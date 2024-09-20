@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import BoxItem from "./../molecule/box-item"; // Pastikan Anda mengimport komponen BoxItem
-import Loader from "../atoms/loader"; // Pastikan Anda sudah memiliki komponen Loader
+import BoxItem from "./../molecule/box-item";
+import Loader from "../atoms/loader";
 
 export default function WishlistOrganism() {
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -9,8 +9,8 @@ export default function WishlistOrganism() {
   const user_id = user ? user._id : null;
 
   useEffect(() => {
-    console.log("User from session:", user); // Debugging line
-    console.log("User ID:", user_id); // Debugging line
+    console.log("User from session:", user);
+    console.log("User ID:", user_id);
   }, [user]);
 
   const fetchWishlistItems = useCallback(async () => {
@@ -18,25 +18,22 @@ export default function WishlistOrganism() {
 
     setIsLoading(true);
     try {
-      // Fetch wishlist data
       const wishlistResponse = await fetch(
         "https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn"
       );
       const wishlistData = await wishlistResponse.json();
-      console.log("Wishlist Data:", wishlistData); // Debugging line
+      console.log("Wishlist Data:", wishlistData);
 
-      // Filter wishlist data by user_id
       const filteredWishlistData = wishlistData.data.filter(
-        (item) => item.user_id === user_id // Gunakan item.user_id
+        (item) => item.user_id === user_id
       );
-      console.log("Filtered Wishlist Data:", filteredWishlistData); // Debugging line
+      console.log("Filtered Wishlist Data:", filteredWishlistData);
 
       // Fetch product data
       const productResponse = await fetch("https://fakestoreapi.com/products");
       const productData = await productResponse.json();
-      console.log("Product Data:", productData); // Debugging line
+      console.log("Product Data:", productData);
 
-      // Map wishlist items to include product details
       const mappedWishlistItems = filteredWishlistData.map((wishlistItem) => {
         const product = productData.find(
           (p) => p.id === wishlistItem.product_id

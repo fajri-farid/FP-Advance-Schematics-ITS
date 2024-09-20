@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Input from "../atoms/input";
 import Button from "../atoms/button";
 
-const url = "https://v1.appbackend.io/v1/rows/dKqJ7KQXYKek"; // URL backend untuk login
+const url = "https://v1.appbackend.io/v1/rows/dKqJ7KQXYKek";
 
 export default function LoginComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State untuk toggle password
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const navigate = useNavigate(); // Hook untuk navigasi
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -32,11 +32,10 @@ export default function LoginComponent() {
           );
 
           if (user) {
-            // Simpan informasi user di session storage setelah login
             sessionStorage.setItem("user", JSON.stringify(user));
 
             alert("Login successful!");
-            navigate("/"); // Setelah login berhasil, arahkan ke halaman home
+            navigate("/");
           } else {
             setErrorMessage("Invalid email or password!");
           }
@@ -90,14 +89,12 @@ export default function LoginComponent() {
             </span>
           </div>
 
-          {/* Error Message */}
           {errorMessage && (
             <p className="text-red-500 text-sm text-center mb-4">
               {errorMessage}
             </p>
           )}
 
-          {/* Register Link */}
           <p className="text-center text-sm text-gray-600 mb-4">
             Don&apos;t have an account?{" "}
             <a href="/register" className="text-blue-500 hover:underline">
@@ -105,7 +102,6 @@ export default function LoginComponent() {
             </a>
           </p>
 
-          {/* Login Button */}
           <Button label="Login" className="w-full" />
         </form>
       </div>

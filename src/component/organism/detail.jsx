@@ -9,7 +9,7 @@ export default function Detail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isFavorited, setIsFavorited] = useState(false);
-  const [favoriteId, setFavoriteId] = useState(null); // State untuk menyimpan ID favorit
+  const [favoriteId, setFavoriteId] = useState(null); 
   const user = JSON.parse(sessionStorage.getItem("user"));
   const user_id = user ? user._id : null;
 
@@ -117,18 +117,18 @@ export default function Detail() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify([favoriteId]), // Gunakan favoriteId untuk hapus
+          body: JSON.stringify([favoriteId]), 
         });
 
         const result = await response.json();
         console.log("Item removed from favorites:", result);
         setIsFavorited(false);
-        setFavoriteId(null); // Reset favoriteId setelah dihapus
+        setFavoriteId(null); 
       } catch (error) {
         console.error("Error removing item from favorites:", error);
       }
     } else {
-      // Tambah ke wishlist
+    
       try {
         const response = await fetch(url, {
           method: "POST",
@@ -146,7 +146,7 @@ export default function Detail() {
         const result = await response.json();
         console.log("Item added to favorites:", result);
         setIsFavorited(true);
-        setFavoriteId(result.data._id); // Simpan ID favorit yang baru
+        setFavoriteId(result.data._id); 
       } catch (error) {
         console.error("Error adding item to favorites:", error);
       }
