@@ -26,15 +26,17 @@ export default function LoginComponent() {
       .then((result) => {
         console.log(result);
 
-        // Memeriksa apakah result adalah objek dengan properti `data` yang merupakan array
         if (result.data && Array.isArray(result.data)) {
           const user = result.data.find(
             (user) => user.email === email && user.password === password
           );
 
           if (user) {
+            // Simpan informasi user di session storage setelah login
+            sessionStorage.setItem("user", JSON.stringify(user));
+
             alert("Login successful!");
-            navigate("/");
+            navigate("/"); // Setelah login berhasil, arahkan ke halaman home
           } else {
             setErrorMessage("Invalid email or password!");
           }
