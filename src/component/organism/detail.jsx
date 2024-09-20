@@ -8,8 +8,10 @@ export default function Detail() {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const user = JSON.parse(sessionStorage.getItem("user")); // Mengambil dan mengurai data pengguna
-  const user_id = user ? user._id : null; // Mendapatkan user_id jika ada
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favoriteId, setFavoriteId] = useState(null); // State untuk menyimpan ID favorit
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user_id = user ? user._id : null;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -24,8 +26,44 @@ export default function Detail() {
         setLoading(false);
       }
     };
+
     fetchProduct();
   }, [productId]);
+
+  const checkIfFavorited = async () => {
+    try {
+      const response = await fetch(
+        `https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn?user_id=${user_id}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      const favorites = result.data;
+
+      if (Array.isArray(favorites)) {
+        const favoriteItem = favorites.find(
+          (item) => item.product_id === product.id && item.user_id === user_id
+        );
+        setIsFavorited(!!favoriteItem);
+        if (favoriteItem) {
+          setFavoriteId(favoriteItem._id); // Simpan ID favorit
+        }
+      } else {
+        console.error("Expected favorites to be an array, but got:", favorites);
+      }
+    } catch (error) {
+      console.error("Error checking favorites:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user_id && product) {
+      checkIfFavorited();
+    }
+  }, [user_id, product]);
 
   if (loading) {
     return (
@@ -68,27 +106,50 @@ export default function Detail() {
     }
   };
 
-  const addToFavorites = async () => {
-    const favoriteUrl = "https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn";
-    try {
-      const response = await fetch(favoriteUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify([
-          {
-            user_id: user_id,
-            product_id: product.id,
-          },
-        ]),
-      });
+  const toggleFavorite = async () => {
+    const url = "https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn";
 
-      const result = await response.json();
-      console.log("Item added to favorites:", result);
-      alert("Berhasil menambahkan produk ke wishlist!");
-    } catch (error) {
-      console.error("Error adding item to favorites:", error);
+    if (isFavorited) {
+      // Hapus dari wishlist
+      try {
+        const response = await fetch(url, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify([favoriteId]), // Gunakan favoriteId untuk hapus
+        });
+
+        const result = await response.json();
+        console.log("Item removed from favorites:", result);
+        setIsFavorited(false);
+        setFavoriteId(null); // Reset favoriteId setelah dihapus
+      } catch (error) {
+        console.error("Error removing item from favorites:", error);
+      }
+    } else {
+      // Tambah ke wishlist
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify([
+            {
+              user_id: user_id,
+              product_id: product.id,
+            },
+          ]),
+        });
+
+        const result = await response.json();
+        console.log("Item added to favorites:", result);
+        setIsFavorited(true);
+        setFavoriteId(result.data._id); // Simpan ID favorit yang baru
+      } catch (error) {
+        console.error("Error adding item to favorites:", error);
+      }
     }
   };
 
@@ -130,10 +191,14 @@ export default function Detail() {
             </button>
 
             <button
-              onClick={addToFavorites}
-              className="text-red-500 text-xl md:text-2xl"
+              onClick={toggleFavorite}
+              className={`text-xl md:text-2xl ${
+                isFavorited ? "text-red-500" : "text-gray-500"
+              }`}
             >
-              <i className="fa-regular fa-heart"></i>
+              <i
+                className={`fa-${isFavorited ? "solid" : "regular"} fa-heart`}
+              ></i>
             </button>
           </div>
         </div>
