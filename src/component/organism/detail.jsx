@@ -9,7 +9,7 @@ export default function Detail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isFavorited, setIsFavorited] = useState(false);
-  const [favoriteId, setFavoriteId] = useState(null); 
+  const [favoriteId, setFavoriteId] = useState(null);
   const user = JSON.parse(sessionStorage.getItem("user"));
   const user_id = user ? user._id : null;
 
@@ -49,7 +49,7 @@ export default function Detail() {
         );
         setIsFavorited(!!favoriteItem);
         if (favoriteItem) {
-          setFavoriteId(favoriteItem._id); // Simpan ID favorit
+          setFavoriteId(favoriteItem._id);
         }
       } else {
         console.error("Expected favorites to be an array, but got:", favorites);
@@ -77,11 +77,12 @@ export default function Detail() {
     return <div>Product not found</div>;
   }
 
-  if (!user_id) {
-    return <div>Please log in to add items to your cart.</div>;
-  }
-
   const addToCart = async () => {
+    if (!user_id) {
+      alert("Please log in to add to cart");
+      return;
+    }
+
     const cartUrl = "https://v1.appbackend.io/v1/rows/NlqSRdbvsXUZ";
     try {
       const response = await fetch(cartUrl, {
@@ -107,28 +108,31 @@ export default function Detail() {
   };
 
   const toggleFavorite = async () => {
+    if (!user_id) {
+      alert("Please log in to manage favorites");
+      return;
+    }
+
     const url = "https://v1.appbackend.io/v1/rows/MRfrI6ooYDRn";
 
     if (isFavorited) {
-      // Hapus dari wishlist
       try {
         const response = await fetch(url, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify([favoriteId]), 
+          body: JSON.stringify([favoriteId]),
         });
 
         const result = await response.json();
         console.log("Item removed from favorites:", result);
         setIsFavorited(false);
-        setFavoriteId(null); 
+        setFavoriteId(null);
       } catch (error) {
         console.error("Error removing item from favorites:", error);
       }
     } else {
-    
       try {
         const response = await fetch(url, {
           method: "POST",
@@ -146,7 +150,7 @@ export default function Detail() {
         const result = await response.json();
         console.log("Item added to favorites:", result);
         setIsFavorited(true);
-        setFavoriteId(result.data._id); 
+        setFavoriteId(result.data._id);
       } catch (error) {
         console.error("Error adding item to favorites:", error);
       }
