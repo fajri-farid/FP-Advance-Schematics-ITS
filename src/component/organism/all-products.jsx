@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import BoxItem from "../molecule/box-item";
 import Loader from "../atoms/loader";
-import Filter from "../organism/filter"; // Import Filter
+import Filter from "../organism/filter";
 
-export default function AllProducts() {
+export default function AllProducts({ searchTerm }) {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,15 +26,22 @@ export default function AllProducts() {
   }, []);
 
   useEffect(() => {
-    if (selectedCategory === "All") {
-      setFilteredProducts(products);
-    } else {
-      const filtered = products.filter(
+    let filtered = products;
+
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter(
         (product) => product.category === selectedCategory.toLowerCase()
       );
-      setFilteredProducts(filtered);
     }
-  }, [selectedCategory, products]);
+
+    if (searchTerm) {
+      filtered = filtered.filter((product) =>
+        product.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredProducts(filtered);
+  }, [selectedCategory, products, searchTerm]);
 
   if (loading) {
     return (
