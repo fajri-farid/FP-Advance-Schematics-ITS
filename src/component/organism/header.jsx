@@ -3,9 +3,10 @@ import Button from "../atoms/button";
 import Input from "../atoms/input";
 import { useState, useEffect } from "react";
 
-function Header() {
+function Header({ onSearch }) {
   const [user, setUser] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loggedInUser = sessionStorage.getItem("user");
@@ -22,6 +23,12 @@ function Header() {
 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    onSearch(value);
   };
 
   return (
@@ -67,6 +74,8 @@ function Header() {
             placeholder="Search..."
             size="small"
             className="pr-10"
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
           <i className="fa-solid fa-magnifying-glass absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
         </div>
